@@ -1,7 +1,7 @@
 //DAO//
 
 /*
- * ItemDao adalah antarmuka Data Access Object (DAO) untuk Room Database.
+ * ItemDao adalah nama dari interface DAO untuk Room Database.
  * DAO berfungsi sebagai lapisan abstraksi untuk operasi CRUD (Create, Read, Update, Delete) 
  * pada tabel database yang diwakili oleh entitas `Item`.
  * Semua fungsi dalam DAO ini menggunakan anotasi Room untuk mendefinisikan operasi database.
