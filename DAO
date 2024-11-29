@@ -1,5 +1,76 @@
 //DAO//
+
 /*
-*
-*
-*/
+ * ItemDao adalah antarmuka Data Access Object (DAO) untuk Room Database.
+ * DAO berfungsi sebagai lapisan abstraksi untuk operasi CRUD (Create, Read, Update, Delete) 
+ * pada tabel database yang diwakili oleh entitas `Item`.
+ * Semua fungsi dalam DAO ini menggunakan anotasi Room untuk mendefinisikan operasi database.
+ * Room secara otomatis menghasilkan implementasi dari antarmuka ini pada waktu kompilasi.
+ */
+@Dao
+interface ItemDao {
+
+    /*
+     * Fungsi insert
+     * ----------------
+     * Digunakan untuk menambahkan data baru ke tabel `items`.
+     * @Insert: Anotasi ini menentukan bahwa fungsi akan melakukan operasi INSERT ke dalam database.
+     * @param item: Objek `Item` yang akan dimasukkan ke dalam tabel.
+     * @OnConflictStrategy.IGNORE: Jika terjadi konflik (misalnya, entri dengan primary key yang sama),
+     * operasi ini akan diabaikan dan data tidak akan dimasukkan.
+     * @suspend: Fungsi ini adalah fungsi penangguhan (suspend) sehingga harus dipanggil dalam coroutine.
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(item: Item)
+
+    /*
+     * Fungsi update
+     * ----------------
+     * Digunakan untuk memperbarui data yang sudah ada dalam tabel `items`.
+     * @Update: Anotasi ini menentukan bahwa fungsi akan melakukan operasi UPDATE pada baris tabel.
+     * @param item: Objek `Item` dengan perubahan yang akan diterapkan ke dalam tabel. 
+     * Objek ini harus memiliki primary key yang cocok dengan entri yang ada di database.
+     * @suspend: Fungsi ini adalah fungsi penangguhan sehingga harus dipanggil dalam coroutine.
+     */
+    @Update
+    suspend fun update(item: Item)
+
+    /*
+     * Fungsi delete
+     * ----------------
+     * Digunakan untuk menghapus data dari tabel `items`.
+     * @Delete: Anotasi ini menentukan bahwa fungsi akan melakukan operasi DELETE pada baris tabel.
+     * @param item: Objek `Item` yang akan dihapus dari tabel. Objek ini harus memiliki primary key
+     * yang cocok dengan entri yang ada di database.
+     * @suspend: Fungsi ini adalah fungsi penangguhan sehingga harus dipanggil dalam coroutine.
+     */
+    @Delete
+    suspend fun delete(item: Item)
+
+    /*
+     * Fungsi getItem
+     * ----------------
+     * Digunakan untuk mengambil satu entri dari tabel `items` berdasarkan id.
+     * @Query: Anotasi ini memungkinkan penulisan kueri SQL secara manual.
+     * SQL: "SELECT * from items WHERE id = :id" - Mengambil semua kolom dari tabel `items` 
+     * di mana kolom `id` cocok dengan parameter fungsi `id`.
+     * @param id: ID dari entri yang ingin diambil.
+     * @return: Mengembalikan objek `Item` dalam bentuk Flow, yang memungkinkan pengamatan 
+     * reaktif terhadap perubahan data.
+     */
+    @Query("SELECT * from items WHERE id = :id")
+    fun getItem(id: Int): Flow<Item>
+
+    /*
+     * Fungsi getAllItems
+     * ----------------
+     * Digunakan untuk mengambil semua entri dari tabel `items` dalam urutan nama secara ascending.
+     * @Query: Anotasi ini memungkinkan penulisan kueri SQL secara manual.
+     * SQL: "SELECT * from items ORDER BY name ASC" - Mengambil semua kolom dari tabel `items` 
+     * dan mengurutkannya berdasarkan kolom `name` dalam urutan menaik (ascending).
+     * @return: Mengembalikan daftar semua entri `Item` dalam bentuk Flow, yang memungkinkan
+     * UI untuk merespons perubahan data secara otomatis.
+     */
+    @Query("SELECT * from items ORDER BY name ASC")
+    fun getAllItems(): Flow<List<Item>>
+}
