@@ -1,5 +1,71 @@
 //Repository//
+
 /*
-*
-*
-*/
+ * OfflineItemsRepository
+ * -------------------------
+ * Kelas `OfflineItemsRepository` adalah implementasi dari antarmuka `ItemsRepository`.
+ * Repository bertanggung jawab sebagai mediator antara data sumber (dalam hal ini database Room)
+ * dan lapisan bisnis aplikasi. Kelas ini menggunakan DAO (`ItemDao`) untuk berinteraksi dengan database.
+ *
+ * Parameter Constructor:
+ * - `itemDao`: Instance `ItemDao` yang digunakan untuk mengakses tabel `Item` di database.
+ * 
+ * Fungsi:
+ * - Kelas ini mengimplementasikan berbagai fungsi CRUD untuk operasi dengan entitas `Item`.
+ * - Memanfaatkan fungsi `Flow` untuk pengamatan data secara reaktif.
+ */
+class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
+
+    /*
+     * Fungsi getAllItemsStream()
+     * ----------------------------
+     * Fungsi ini mengambil daftar semua item dari tabel `items` menggunakan DAO.
+     * 
+     * @return: `Flow<List<Item>>` - Aliran data reaktif yang mengirimkan pembaruan daftar item
+     * setiap kali terjadi perubahan pada tabel `items`.
+     * 
+     * Operasi ini dilakukan secara real-time sehingga cocok untuk pembaruan UI otomatis.
+     */
+    override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
+
+    /*
+     * Fungsi getItemStream(id: Int)
+     * ------------------------------
+     * Fungsi ini mengambil data item spesifik berdasarkan ID-nya menggunakan DAO.
+     * 
+     * @param id: Integer - ID item yang ingin diambil.
+     * @return: `Flow<Item?>` - Aliran data reaktif yang mengirimkan pembaruan untuk item tersebut 
+     * setiap kali datanya berubah. Mengembalikan `null` jika item tidak ditemukan.
+     */
+    override fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)
+
+    /*
+     * Fungsi insertItem(item: Item)
+     * -------------------------------
+     * Fungsi ini menyisipkan data item baru ke tabel `items` menggunakan DAO.
+     * 
+     * @param item: Objek `Item` yang akan dimasukkan.
+     * @suspend: Operasi ini dilakukan secara asinkron dan harus dijalankan dalam coroutine.
+     */
+    override suspend fun insertItem(item: Item) = itemDao.insert(item)
+
+    /*
+     * Fungsi deleteItem(item: Item)
+     * -------------------------------
+     * Fungsi ini menghapus data item yang ada di tabel `items` menggunakan DAO.
+     * 
+     * @param item: Objek `Item` yang akan dihapus dari tabel.
+     * @suspend: Operasi ini dilakukan secara asinkron dan harus dijalankan dalam coroutine.
+     */
+    override suspend fun deleteItem(item: Item) = itemDao.delete(item)
+
+    /*
+     * Fungsi updateItem(item: Item)
+     * -------------------------------
+     * Fungsi ini memperbarui data item yang sudah ada di tabel `items` menggunakan DAO.
+     * 
+     * @param item: Objek `Item` dengan data baru yang akan diperbarui di tabel.
+     * @suspend: Operasi ini dilakukan secara asinkron dan harus dijalankan dalam coroutine.
+     */
+    override suspend fun updateItem(item: Item) = itemDao.update(item)
+}
