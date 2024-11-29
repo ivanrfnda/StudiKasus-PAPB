@@ -1,5 +1,50 @@
-//Entities//
+// Entity //
+
 /*
-*
-*
-*/
+ * Data class Item
+ * ----------------
+ * Data class `Item` adalah representasi logis dari sebuah entitas dalam aplikasi. 
+ * Sebelum dilengkapi dengan anotasi Room, ini hanya merupakan kelas data biasa yang digunakan 
+ * untuk memodelkan item dengan properti seperti `id`, `name`, `price`, dan `quantity`.
+ *
+ * Properti:
+ * - `id`: Integer yang mewakili identitas unik dari setiap item (primary key di database).
+ * - `name`: String yang mewakili nama item.
+ * - `price`: Double yang menyatakan harga item.
+ * - `quantity`: Integer yang menunjukkan jumlah item yang tersedia.
+ *
+ * Catatan:
+ * Data class ini sendiri belum berfungsi sebagai entitas database karena tidak memiliki anotasi `@Entity`.
+ */
+data class Item(
+    val id: Int,
+    val name: String,
+    val price: Double,
+    val quantity: Int
+)
+
+/*
+ * Data class Item sebagai Entity Room
+ * ------------------------------------
+ * Setelah ditambahkan anotasi `@Entity`, data class `Item` diubah menjadi representasi 
+ * dari tabel dalam database Room. Setiap properti di dalam data class ini menjadi kolom dalam tabel.
+ *
+ * Anotasi dan Properti:
+ * - `@Entity`: Menandakan bahwa kelas ini adalah entitas Room. 
+ *   - `tableName`: Mengatur nama tabel dalam database, yaitu "items".
+ * - `@PrimaryKey`: Menentukan bahwa properti `id` adalah kunci utama tabel.
+ *   - `autoGenerate = true`: Secara otomatis menghasilkan nilai untuk `id` setiap kali data baru dimasukkan.
+ * - `id`: Primary key untuk entri database, diatur dengan default `0` saat membuat data baru.
+ *
+ * Catatan:
+ * - Tabel database akan dibuat berdasarkan struktur data class ini dengan nama kolom yang sesuai dengan properti.
+ * - Properti lain (seperti `name`, `price`, dan `quantity`) akan otomatis menjadi kolom dalam tabel "items".
+ */
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "items")
+data class Item(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0, // Primary key yang digenerate secara otomatis.
+    // ...
+)
