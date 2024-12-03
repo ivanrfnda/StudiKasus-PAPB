@@ -1,11 +1,9 @@
 //Repository//
 
 /*
- * OfflineItemsRepository
- * -------------------------
  * Kelas `OfflineItemsRepository` adalah implementasi dari antarmuka `ItemsRepository`.
- * Repository bertanggung jawab sebagai mediator antara data sumber (dalam hal ini database Room)
- * dan lapisan bisnis aplikasi. Kelas ini menggunakan DAO (`ItemDao`) untuk berinteraksi dengan database.
+ * Repository berfungsi sebagai mediator antara database Room dan lapisan bisnis aplikasi. 
+ * Kelas ini menggunakan DAO (`ItemDao`) untuk berinteraksi dengan database.
  *
  * Parameter Constructor:
  * - `itemDao`: Instance `ItemDao` yang digunakan untuk mengakses tabel `Item` di database.
