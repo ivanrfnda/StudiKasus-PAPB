@@ -3,33 +3,27 @@
 /*
  * InventoryDatabase
  * -------------------
- * Kelas abstrak `InventoryDatabase` adalah representasi utama database Room untuk aplikasi.
+ * Kelas `InventoryDatabase` adalah representasi utama database Room untuk aplikasi.
  * Kelas ini:
- * - Menentukan entitas database (dalam hal ini, `Item`).
- * - Memfasilitasi akses ke DAO (`ItemDao`) untuk melakukan operasi database.
- * - Menggunakan pola Singleton untuk memastikan hanya ada satu instance database 
- *   yang dibuat selama siklus hidup aplikasi.
+ * - Menentukan entitas database yaitu `Item`).
+ * - Memfasilitasi akses ke `ItemDao` untuk melakukan operasi database.
+ * - Menggunakan pola Singleton untuk memastikan hanya ada satu instance database yang dibuat selama siklus hidup aplikasi.
  *
  * Anotasi `@Database`:
- * - `entities`: Daftar kelas entitas yang terkait dengan database ini. Di sini hanya `Item`.
+ * - `entities`: Daftar kelas entitas yang terkait dengan database ini. Di sini hanya yaitu `Item`.
  * - `version`: Versi skema database. Diperbarui setiap kali struktur tabel berubah.
- * - `exportSchema`: Menentukan apakah skema database akan diekspor. Disetel `false` di sini
- *   untuk mencegah ekspor skema ke file JSON.
+ * - `exportSchema`: Menentukan apakah skema database akan diekspor. Diatur `false` untuk mencegah ekspor skema ke file JSON.
  */
 @Database(entities = [Item::class], version = 1, exportSchema = false)
 abstract class InventoryDatabase : RoomDatabase() {
 
     /*
-     * Fungsi abstrak itemDao()
-     * -------------------------
-     * Fungsi ini mengembalikan instance `ItemDao`, yang menyediakan akses ke metode CRUD
+     * Fungsi itemDao() berfungsi mengembalikan instance `ItemDao`, yang menyediakan akses ke metode CRUD
      * untuk entitas `Item`. Implementasinya akan dihasilkan secara otomatis oleh Room.
      */
     abstract fun itemDao(): ItemDao
 
     /*
-     * Companion Object
-     * ------------------
      * Companion object digunakan untuk menyimpan instance tunggal (singleton) dari database.
      * Ini memastikan bahwa hanya satu instance dari `InventoryDatabase` yang dibuat 
      * selama siklus hidup aplikasi, menghemat sumber daya dan menghindari masalah konsistensi data.
@@ -37,26 +31,18 @@ abstract class InventoryDatabase : RoomDatabase() {
     companion object {
 
         /*
-         * Instance
-         * ---------
          * Variabel `Instance` adalah referensi tunggal ke database.
-         * Anotasi `@Volatile` memastikan bahwa perubahan pada variabel ini 
-         * segera terlihat oleh semua thread, menghindari masalah *race condition*.
+         * Anotasi `@Volatile` memastikan bahwa perubahan pada variabel ini segera terlihat oleh semua thread, menghindari masalah *race condition*.
          */
         @Volatile
         private var Instance: InventoryDatabase? = null
 
         /*
-         * Fungsi getDatabase(context: Context): InventoryDatabase
-         * -------------------------------------------------------
-         * Fungsi ini mengembalikan instance tunggal `InventoryDatabase`.
-         * Jika instance belum dibuat, maka fungsi ini akan membuat instance baru
-         * dengan menggunakan `Room.databaseBuilder`. Jika sudah ada, fungsi ini mengembalikan instance yang ada.
-         *
-         * Parameter:
-         * - `context`: Konteks aplikasi yang dibutuhkan untuk membuat instance database.
-         *
-         * Operasi:
+         * Fungsi getDatabase(context: Context): InventoryDatabase berfungsi mengembalikan instance tunggal `InventoryDatabase`.
+         * Jika instance belum dibuat, maka fungsi ini akan membuat instance baru dengan menggunakan `Room.databaseBuilder`.
+         * Jika sudah ada, fungsi ini mengembalikan instance yang ada.
+         * Parameter `context`: Konteks aplikasi yang dibutuhkan untuk membuat instance database.
+         * Operasi yang terjadi:
          * 1. Mengecek apakah `Instance` sudah diinisialisasi:
          *    - Jika ya, mengembalikan instance yang ada.
          *    - Jika tidak, menggunakan `synchronized(this)` untuk menghindari penginisialisasian ganda.
@@ -65,13 +51,9 @@ abstract class InventoryDatabase : RoomDatabase() {
          *    - `InventoryDatabase::class.java`: Kelas database yang didefinisikan.
          *    - `"item_database"`: Nama database.
          * 3. Menyimpan instance baru dalam `Instance`.
-         *
-         * Sinkronisasi diperlukan untuk memastikan hanya satu thread yang dapat 
-         * menginisialisasi instance pada satu waktu.
+         * Sinkronisasi diperlukan untuk memastikan hanya satu thread yang dapat menginisialisasi instance pada satu waktu.
          */
         fun getDatabase(context: Context): InventoryDatabase {
-            // Jika Instance tidak null, kembalikan instance yang ada.
-            // Jika null, buat instance baru menggunakan Room.databaseBuilder.
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(
                     context,
@@ -79,7 +61,7 @@ abstract class InventoryDatabase : RoomDatabase() {
                     "item_database"
                 )
                     .build()
-                    .also { Instance = it } // Simpan instance baru ke dalam variabel Instance.
+                    .also { Instance = it }
             }
         }
     }
